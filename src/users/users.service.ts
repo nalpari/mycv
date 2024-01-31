@@ -23,6 +23,10 @@ export class UsersService {
   }
 
   async findOneById(id: number): Promise<User> {
+    if (!id) {
+      return null;
+    }
+
     const user = await this.usersRepository.findOneBy({ id });
     if (!user) {
       throw new NotFoundException('User not found');
@@ -47,14 +51,12 @@ export class UsersService {
   }
 
   async update(id: number, attrs: Partial<User>): Promise<User> {
-    console.log(attrs);
     const user = await this.findOneById(id);
     if (!user) {
       throw new NotFoundException('User not found');
     }
 
     Object.assign(user, attrs);
-    console.log(user);
     await this.usersRepository.save(user);
     return user;
   }
