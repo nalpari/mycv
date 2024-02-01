@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   HttpCode,
+  NotFoundException,
   Param,
   Patch,
   Post,
@@ -18,9 +19,9 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { Serialize } from '../interceptors/serialize.interceptor';
 import { UserDto } from './dto/user.dto';
 import { AuthService } from './auth.service';
-import { User } from './user.entity';
 import { CurrentUser } from './decorators/current-user.decorator';
-import { AuthGuard } from 'src/guards/auth.guard';
+// import { AuthGuard } from 'src/guards/auth.guard';
+import { User } from './user.entity';
 // import { CurrentUserInterceptor } from './interceptors/current-user.interceptor';
 
 @Controller('auth')
@@ -37,7 +38,7 @@ export class UsersController {
   //   return this.usersService.findOneById(session.userId);
   // }
   @Get('/whoami')
-  @UseGuards(AuthGuard)
+  // @UseGuards(AuthGuard)
   whoAmI(@CurrentUser() user: User) {
     return user;
   }
@@ -69,15 +70,19 @@ export class UsersController {
   }
 
   @Get()
-  findAll() {
-    return this.usersService.findAll();
+  findAll(email: string) {
+    return this.usersService.find(email);
   }
 
   // @UseInterceptors(new SerializeInterceptor(UserDto))
   // @Serialize(UserDto)
   @Get('/:id')
   findOneById(@Param('id') id: number) {
-    return this.usersService.findOneById(id);
+    const user = this.usersService.findOneById(id);
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    return user;
   }
 
   @Get('/:email')

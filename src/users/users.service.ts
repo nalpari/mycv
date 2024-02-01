@@ -18,6 +18,10 @@ export class UsersService {
     return user;
   }
 
+  async find(email: string): Promise<User[]> {
+    return this.usersRepository.find({ where: { email } });
+  }
+
   async findAll(): Promise<User[]> {
     return this.usersRepository.find({ order: { id: 'DESC' } });
   }

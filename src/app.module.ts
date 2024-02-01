@@ -11,6 +11,7 @@ import { Report } from './reports/report.entity';
   imports: [
     TypeOrmModule.forRoot({
       type: 'sqlite',
+      // database: process.env.NODE_ENV === 'test' ? 'test.sqlite' : 'db.sqlite',
       database: 'db.sqlite',
       entities: [User, Report],
       synchronize: true,

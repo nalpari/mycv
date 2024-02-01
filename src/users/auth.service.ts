@@ -15,24 +15,21 @@ export class AuthService {
 
   async signup(email: string, password: string): Promise<User> {
     // See if email is in use
-    const usedUser = await this.userService.findEmail(email);
-    if (usedUser) {
+    const usedUser = await this.userService.find(email);
+    if (usedUser.length > 0) {
       throw new BadRequestException('Email in use');
     }
 
     const salt = randomBytes(8).toString('hex');
     const hash = (await scrypt(password, salt, 32)) as Buffer;
     const result = salt + '.' + hash.toString('hex');
-    // If email is in use, throw an error
-    // If email is not in use, hash the password
-    // Create a new user and save it
     const user = await this.userService.create(email, result);
 
     return user;
   }
 
   async signin(email: string, password: string): Promise<User> {
-    const user = await this.userService.findEmail(email);
+    const [user] = await this.userService.find(email);
     if (!user) {
       throw new NotFoundException('User not found');
     }
