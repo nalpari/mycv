@@ -1,4 +1,11 @@
-import { Body, Controller, HttpCode, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  HttpCode,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { CreateReportDto } from './dto/create-report.dto';
 import { ReportsService } from './reports.service';
 import { AuthGuard } from 'src/guards/auth.guard';
@@ -12,5 +19,10 @@ export class ReportsController {
   @HttpCode(201)
   createReport(@Body() body: CreateReportDto) {
     return this.reportsService.create(body);
+  }
+
+  @Get()
+  findReports() {
+    return this.reportsService.findAll();
   }
 }

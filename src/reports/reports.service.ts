@@ -16,4 +16,8 @@ export class ReportsService {
 
     return this.reportsRepository.save(report);
   }
+
+  findAll(): Promise<Report[]> {
+    return this.reportsRepository.find({ order: { id: 'DESC' } });
+  }
 }
